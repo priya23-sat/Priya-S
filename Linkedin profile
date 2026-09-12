@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Priya Satpute — Aspiring Product Manager with 14+ years in banking and credit.">
+<title>Priya Satpute — Product & Banking</title>
+<style>
+:root{
+  --bg:#f5f5f7;--card:#fff;--text:#1d1d1f;--muted:#6e6e73;
+  --line:#d2d2d7;--blue:#0071e3;--dark:#111113;
+  --radius:28px;--shadow:0 18px 50px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",
+  "Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.45;-webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+.container{width:min(1120px,calc(100% - 40px));margin:auto}
+.nav{
+  position:sticky;top:0;z-index:20;
+  background:rgba(245,245,247,.82);backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+.nav-inner{height:58px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:700;letter-spacing:-.02em}
+.nav-links{display:flex;gap:26px;font-size:14px;color:#424245}
+.nav-links a:hover{color:var(--blue)}
+.hero{padding:110px 0 90px}
+.eyebrow{font-size:15px;font-weight:600;color:var(--blue);margin-bottom:18px}
+h1{
+  font-size:clamp(48px,8vw,88px);line-height:.98;
+  letter-spacing:-.065em;margin:0;max-width:900px;font-weight:700;
+}
+.hero h1 span{color:var(--muted)}
+.hero-copy{
+  font-size:clamp(20px,2.6vw,28px);line-height:1.25;
+  letter-spacing:-.025em;color:#424245;max-width:790px;margin:30px 0;
+}
+.actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:13px 21px;border-radius:999px;font-size:15px;font-weight:600;
+  transition:.2s ease;cursor:pointer;border:1px solid transparent;
+}
+.btn.primary{background:var(--blue);color:#fff}
+.btn.primary:hover{background:#0077ed;transform:translateY(-1px)}
+.btn.secondary{background:transparent;border-color:var(--line)}
+.btn.secondary:hover{background:#fff}
+.section{padding:75px 0}
+.section-title{font-size:14px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:700;margin-bottom:22px}
+.intro-grid{display:grid;grid-template-columns:1.3fr .7fr;gap:55px;align-items:start}
+.large-copy{font-size:clamp(28px,4vw,45px);line-height:1.08;letter-spacing:-.045em;margin:0}
+.side-copy{font-size:17px;color:#515154;margin:0}
+.stats{
+  margin-top:45px;display:grid;grid-template-columns:repeat(3,1fr);
+  background:var(--dark);color:#fff;border-radius:var(--radius);overflow:hidden;
+}
+.stat{padding:32px;border-right:1px solid rgba(255,255,255,.14)}
+.stat:last-child{border:0}
+.stat-number{font-size:38px;letter-spacing:-.04em;font-weight:700}
+.stat-label{color:#a1a1a6;margin-top:5px;font-size:14px}
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.card{
+  background:var(--card);border-radius:var(--radius);padding:32px;
+  box-shadow:var(--shadow);min-height:245px;
+}
+.card .icon{
+  width:45px;height:45px;border-radius:14px;background:#f2f2f7;
+  display:grid;place-items:center;font-size:21px;margin-bottom:28px;
+}
+.card h3{font-size:24px;letter-spacing:-.025em;margin:0 0 9px}
+.card p{color:var(--muted);margin:0;font-size:16px}
+.experience{
+  background:#fff;border-radius:36px;padding:45px;
+  box-shadow:var(--shadow)
+}
+.role-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
+.company{font-size:32px;letter-spacing:-.035em;font-weight:700}
+.role{color:var(--blue);font-weight:600;margin-top:4px}
+.date{color:var(--muted);font-size:14px;text-align:right}
+.location{color:var(--muted);font-size:14px;margin-top:4px}
+.experience ul{margin:35px 0 0;padding:0;list-style:none;display:grid;gap:17px}
+.experience li{display:grid;grid-template-columns:10px 1fr;gap:15px;color:#424245}
+.experience li:before{content:"";width:7px;height:7px;background:var(--blue);border-radius:50%;margin-top:9px}
+.focus{
+  margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px
+}
+.focus-item{background:#fff;border-radius:22px;padding:24px;border:1px solid #e5e5e7}
+.focus-item strong{display:block;font-size:16px;margin-bottom:6px}
+.focus-item span{font-size:14px;color:var(--muted)}
+.cta{
+  margin:40px 0 75px;background:var(--dark);color:#fff;border-radius:36px;
+  padding:65px;display:flex;align-items:center;justify-content:space-between;gap:35px
+}
+.cta h2{font-size:clamp(35px,5vw,58px);line-height:1;letter-spacing:-.05em;margin:0;max-width:680px}
+.cta p{color:#a1a1a6;margin:16px 0 0;font-size:17px}
+.cta .btn{background:#fff;color:#111}
+.footer{padding:25px 0 45px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;gap:20px}
+@media(max-width:800px){
+  .nav-links{display:none}
+  .hero{padding:75px 0 65px}
+  .intro-grid{grid-template-columns:1fr;gap:25px}
+  .stats,.cards,.focus{grid-template-columns:1fr}
+  .stat{border-right:0;border-bottom:1px solid rgba(255,255,255,.14)}
+  .card{min-height:auto}
+  .experience{padding:30px}
+  .role-top{display:block}
+  .date{text-align:left;margin-top:10px}
+  .cta{padding:40px 30px;display:block}
+  .cta .btn{margin-top:25px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
+</style>
+</head>
+
+<body>
+<nav class="nav">
+  <div class="container nav-inner">
+    <a class="logo" href="#top">Priya Satpute</a>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#strengths">Strengths</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+  <section class="hero">
+    <div class="container">
+      <div class="eyebrow">Aspiring Product Manager · Banking & Credit</div>
+      <h1>Banking expertise.<br><span>Product thinking.</span></h1>
+      <p class="hero-copy">
+        14+ years of experience across credit and portfolio management,
+        now transitioning into Product Management with a focus on customer
+        experience, product strategy and data-driven problem solving.
+      </p>
+      <div class="actions">
+        <a class="btn primary" href="#contact">Let's connect</a>
+        <a class="btn secondary" href="https://www.linkedin.com/in/priya-satpute-908966347" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-title">01 — About</div>
+      <div class="intro-grid">
+        <p class="large-copy">
+          I solve complex business problems by combining customer understanding,
+          financial analysis, stakeholder management and structured decision-making.
+        </p>
+        <p class="side-copy">
+          My move into Product Management is driven by an interest in building
+          customer-centric solutions and solving problems at scale. I am currently
+          strengthening my product skills through HelloPM across discovery,
+          user research, prioritisation, strategy, metrics and execution.
+        </p>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-number">14+</div>
+          <div class="stat-label">Years in banking & credit</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">13+</div>
+          <div class="stat-label">Years at Bank of India</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">PM</div>
+          <div class="stat-label">Current career direction</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="strengths">
+    <div class="container">
+      <div class="section-title">02 — What I bring</div>
+      <div class="cards">
+        <article class="card">
+          <div class="icon">↗</div>
+          <h3>Analytical thinking</h3>
+          <p>Credit risk assessment, portfolio analysis and financial analysis across balance sheets, P&L statements and cash flows.</p>
+        </article>
+        <article class="card">
+          <div class="icon">◎</div>
+          <h3>Customer understanding</h3>
+          <p>Direct customer engagement to understand needs, identify pain points and provide relevant solutions.</p>
+        </article>
+        <article class="card">
+          <div class="icon">⌁</div>
+          <h3>Problem solving</h3>
+          <p>Using data, customer insights and business context to evaluate problems and prioritise actions.</p>
+        </article>
+        <article class="card">
+          <div class="icon">◌</div>
+          <h3>Stakeholder management</h3>
+          <p>Coordinating with internal and external stakeholders to resolve customer and business issues and drive timely outcomes.</p>
+        </article>
+      </div>
+
+      <div class="focus">
+        <div class="focus-item"><strong>Product Discovery</strong><span>User research · Problem identification</span></div>
+        <div class="focus-item"><strong>Product Strategy</strong><span>Prioritisation · Business & customer needs</span></div>
+        <div class="focus-item"><strong>Execution</strong><span>Metrics · Stakeholder alignment · Outcomes</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="experience">
+    <div class="container">
+      <div class="section-title">03 — Experience</div>
+      <div class="experience">
+        <div class="role-top">
+          <div>
+            <div class="company">Bank of India</div>
+            <div class="role">Manager</div>
+            <div class="location">Pune District</div>
+          </div>
+          <div class="date">July 2013 — Present</div>
+        </div>
+
+        <ul>
+          <li>Managed and monitored a customer portfolio using financial data, customer behaviour and risk indicators to identify opportunities, assess risks and support informed decisions.</li>
+          <li>Analysed cash inflows and financial performance to support forecasting, portfolio planning and timely business decisions.</li>
+          <li>Engaged directly with customers to understand needs, identify pain points and provide relevant solutions.</li>
+          <li>Managed CYC/KYC-related processes while balancing regulatory requirements, operational efficiency and business objectives.</li>
+          <li>Worked on Asset Liability Management (ALM), evaluating liquidity, risk and financial trade-offs to support sustainable decisions.</li>
+          <li>Coordinated with internal and external stakeholders to resolve customer and business issues and ensure timely execution.</li>
+          <li>Used data, financial analysis and customer insights to evaluate problems, prioritise actions and balance customer, business and risk considerations.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" id="contact">
+    <div class="cta">
+      <div>
+        <h2>Let's build better products.</h2>
+        <p>Open to connecting with Product Leaders, Founders, Recruiters and professionals in Product Management, FinTech and Digital Banking.</p>
+      </div>
+      <a class="btn" href="mailto:Priya.Satpute@bankofindia.co.in">Get in touch →</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer">
+    <span>© Priya Satpute</span>
+    <span>Pune, Maharashtra, India</span>
+  </div>
+</footer>
+</body>
+</html>
