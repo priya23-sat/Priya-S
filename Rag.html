@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive RAG Architecture Simulator</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-blue: #38bdf8;
+            --accent-purple: #c084fc;
+            --accent-green: #4ade80;
+            --accent-orange: #fb923c;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+        }
+
+        .pipeline-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .pipeline-container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .section-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-card h2 {
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .phase-tag {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .ingest-tag { background-color: rgba(56, 189, 248, 0.2); color: var(--accent-blue); }
+        .query-tag { background-color: rgba(192, 132, 252, 0.2); color: var(--accent-purple); }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        textarea, input, select, button {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus, input:focus, select:focus {
+            border-color: var(--accent-blue);
+        }
+
+        button {
+            background: linear-gradient(135deg, #0284c7, #2563eb);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        button:hover { opacity: 0.9; }
+        button:active { transform: scale(0.98); }
+
+        /* Step visualizers */
+        .step-box {
+            background-color: rgba(15, 23, 42, 0.5);
+            border-left: 4px solid var(--accent-blue);
+            padding: 1rem;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .step-title {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--accent-blue);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .chunk-list, .vector-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .chunk-item {
+            background-color: var(--bg-color);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .vector-item {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            background: rgba(74, 222, 128, 0.05);
+            padding: 0.4rem;
+            border-radius: 4px;
+        }
+
+        .highlight-match {
+            border-color: var(--accent-green);
+            background-color: rgba(74, 222, 128, 0.1);
+        }
+
+        .prompt-preview {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 0.8rem;
+            background: var(--bg-color);
+            padding: 0.75rem;
+            border-radius: 6px;
+            color: var(--accent-orange);
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .llm-output {
+            background: rgba(192, 132, 252, 0.1);
+            border: 1px solid var(--accent-purple);
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Vector Store Stats Badge */
+        .badge {
+            background: var(--border-color);
+            color: var(--text-main);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Retrieval-Augmented Generation (RAG) Simulator</h1>
+        <p>Interactive breakdown of how knowledge ingestion, semantic search, context augmentation, and LLM generation work together.</p>
+    </header>
+
+    <div class="pipeline-container">
+
+        <!-- PHASE 1: INGESTION -->
+        <div class="section-card">
+            <h2><span class="phase-tag ingest-tag">Phase 1</span> Ingestion Pipeline</h2>
+
+            <div class="form-group">
+                <label for="docInput">Step 1: Raw Document Source</label>
+                <textarea id="docInput" rows="5" placeholder="Paste custom document text here...">Photosynthesis is the process used by plants, algae, and certain bacteria to harness energy from sunlight and turn it into chemical energy. Oxygen is released as a byproduct of this process. 
+
+Gravitational waves are ripples in space-time caused by some of the most violent and energetic processes in the Universe. Albert Einstein predicted the existence of gravitational waves in 1916 in his general theory of relativity.
+
+Quantum computing is a rapidly-emerging technology that harnesses the laws of quantum mechanics to solve problems too complex for classical computers. It utilizes qubits which can exist in superposition.</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="chunkSize">Step 2: Chunking Configuration (Characters per Chunk)</label>
+                <select id="chunkSize">
+                    <option value="120">Small Chunks (~120 chars)</option>
+                    <option value="250" selected>Medium Chunks (~250 chars)</option>
+                    <option value="500">Large Chunks (~500 chars)</option>
+                </select>
+            </div>
+
+            <button id="btnIngest">Process & Index Document</button>
+
+            <!-- Step 3 & 4 Visualizer -->
+            <div class="step-box">
+                <div class="step-title">
+                    <span>Step 3 & 4: Text Chunks & Generated Vector Embeddings</span>
+                    <span id="chunkCountBadge" class="badge">0 Chunks</span>
+                </div>
+                <div id="vectorStoreDisplay" class="vector-list">
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">Click 'Process & Index Document' to build your Vector DB.</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- PHASE 2: QUERY & GENERATION -->
+        <div class="section-card">
+            <h2><span class="phase-tag query-tag">Phase 2</span> Query & Generation Pipeline</h2>
+
+            <div class="form-group">
+                <label for="queryInput">Step 5: User Query</label>
+                <input type="text" id="queryInput" value="How do quantum computers work and what are qubits?">
+            </div>
+
+            <button id="btnQuery" style="background: linear-gradient(135deg, #9333ea, #c084fc);">Execute RAG Pipeline</button>
+
+            <!-- Step 6: Similarity Search Visualizer -->
+            <div class="step-box">
+                <div class="step-title">
+                    <span>Step 6: Semantic Retrieval (Top Matching Chunks)</span>
+                </div>
+                <div id="retrievedChunksDisplay" class="chunk-list">
+                    <p style="color: var(--text-muted); font-size: 0.8rem;">Run a query to retrieve relevant contextual context.</p>
+                </div>
+            </div>
+
+            <!-- Step 7: Augmented Prompt Visualizer -->
+            <div class="step-box">
+                <div class="step-title">
+                    <span>Step 7: Augmented Prompt (Injected Context + Query)</span>
+                </div>
+                <div id="promptDisplay" class="prompt-preview">Waiting for pipeline execution...</div>
+            </div>
+
+            <!-- Step 8: LLM Generation Visualizer -->
+            <div class="step-box" style="border-left-color: var(--accent-purple);">
+                <div class="step-title" style="color: var(--accent-purple);">
+                    <span>Step 8: Final LLM Grounded Response</span>
+                </div>
+                <div id="llmOutputDisplay" class="llm-output">Output will appear here...</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // Global State for Vector Database
+        let vectorDatabase = [];
+
+        // Mock Embedding Generator (Simple pseudo-vector generation based on word hashing for visualization)
+        function mockGenerateEmbedding(text) {
+            const cleanText = text.toLowerCase().replace(/[^\w\s]/gi, '');
+            const words = cleanText.split(/\s+/);
+            
+            // Create a mock 4-dimensional vector based on simple character/word features
+            let dim1 = words.length / 50; // length feature
+            let dim2 = (cleanText.match(/[a-e]/g) || []).length / (cleanText.length || 1); // vowel distribution
+            let dim3 = (cleanText.match(/[f-p]/g) || []).length / (cleanText.length || 1); 
+            let dim4 = (cleanText.match(/[q-z]/g) || []).length / (cleanText.length || 1);
+
+            return [
+                parseFloat(dim1.toFixed(3)), 
+                parseFloat(dim2.toFixed(3)), 
+                parseFloat(dim3.toFixed(3)), 
+                parseFloat(dim4.toFixed(3))
+            ];
+        }
+
+        // Calculating similarity score (Cosine Similarity Mock based on word overlap)
+        function calculateSimilarity(query, chunkText) {
+            const queryWords = new Set(query.toLowerCase().split(/\s+/).filter(w => w.length > 2));
+            const chunkWords = chunkText.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+            
+            let matches = 0;
+            chunkWords.forEach(word => {
+                if (queryWords.has(word)) matches++;
+            });
+
+            return matches / (Math.sqrt(queryWords.size * chunkWords.length) || 1);
+        }
+
+        // Phase 1: Ingestion Function
+        function processIngestion() {
+            const rawText = document.getElementById('docInput').value.trim();
+            const chunkSize = parseInt(document.getElementById('chunkSize').value);
+            const vectorStoreDisplay = document.getElementById('vectorStoreDisplay');
+            const chunkCountBadge = document.getElementById('chunkCountBadge');
+
+            if (!rawText) {
+                alert('Please enter document text!');
+                return;
+            }
+
+            vectorDatabase = [];
+            vectorStoreDisplay.innerHTML = '';
+
+            // Step 2: Chunking Logic
+            let startIndex = 0;
+            let chunkId = 1;
+
+            while (startIndex < rawText.length) {
+                let endIndex = startIndex + chunkSize;
+                let chunkText = rawText.substring(startIndex, endIndex);
+                
+                // Try not to break words mid-sentence if possible
+                if (endIndex < rawText.length && rawText[endIndex] !== ' ') {
+                    let lastSpace = chunkText.lastIndexOf(' ');
+                    if (lastSpace > 0) {
+                        chunkText = chunkText.substring(0, lastSpace);
+                        endIndex = startIndex + lastSpace;
+                    }
+                }
+
+                chunkText = chunkText.trim();
+                
+                if (chunkText.length > 0) {
+                    // Step 3: Embeddings
+                    const embedding = mockGenerateEmbedding(chunkText);
+                    
+                    // Step 4: Save to Vector DB
+                    vectorDatabase.push({
+                        id: `chunk-${chunkId}`,
+                        text: chunkText,
+                        embedding: embedding
+                    });
+                    chunkId++;
+                }
+
+                startIndex = endIndex + 1;
+            }
+
+            // Update UI
+            chunkCountBadge.innerText = `${vectorDatabase.length} Chunks Vectorized`;
+            
+            vectorDatabase.forEach(item => {
+                const itemElem = document.createElement('div');
+                itemElem.className = 'chunk-item';
+                itemElem.innerHTML = `
+                    <strong>ID: ${item.id}</strong>
+                    <p style="margin: 4px 0;">"${item.text}"</p>
+                    <div class="vector-item">Embedding: [${item.embedding.join(', ')}]</div>
+                `;
+                vectorStoreDisplay.appendChild(itemElem);
+            });
+        }
+
+        // Phase 2: Query & Retrieval Pipeline
+        function processQuery() {
+            const query = document.getElementById('queryInput').value.trim();
+            const retrievedDisplay = document.getElementById('retrievedChunksDisplay');
+            const promptDisplay = document.getElementById('promptDisplay');
+            const llmOutputDisplay = document.getElementById('llmOutputDisplay');
+
+            if (!query) {
+                alert('Please enter a query!');
+                return;
+            }
+
+            if (vectorDatabase.length === 0) {
+                alert('Vector database is empty. Please run Phase 1 (Ingestion) first.');
+                return;
+            }
+
+            // Step 5: Embed Query
+            const queryEmbedding = mockGenerateEmbedding(query);
+
+            // Step 6: Similarity Search & Scoring
+            const scoredChunks = vectorDatabase.map(chunk => {
+                return {
+                    ...chunk,
+                    score: calculateSimilarity(query, chunk.text)
+                };
+            });
+
+            // Sort by relevance score
+            scoredChunks.sort((a, b) => b.score - a.score);
+
+            // Select top 2 matching chunks
+            const topMatches = scoredChunks.slice(0, 2).filter(item => item.score > 0);
+
+            // Display Retrieved Context
+            retrievedDisplay.innerHTML = '';
+            if (topMatches.length === 0) {
+                retrievedDisplay.innerHTML = `<p style="color: var(--accent-orange); font-size: 0.8rem;">No relevant chunks found in the database.</p>`;
+            } else {
+                topMatches.forEach(match => {
+                    const matchElem = document.createElement('div');
+                    matchElem.className = 'chunk-item highlight-match';
+                    matchElem.innerHTML = `
+                        <strong>ID: ${match.id} (Relevance Score: ${(match.score * 100).toFixed(1)}%)</strong>
+                        <p style="margin-top:4px;">"${match.text}"</p>
+                    `;
+                    retrievedDisplay.appendChild(matchElem);
+                });
+            }
+
+            // Step 7: Prompt Augmentation
+            const contextText = topMatches.length > 0 
+                ? topMatches.map(m => m.text).join('\n---\n') 
+                : "No external context available.";
+
+            const augmentedPrompt = `System: You are a helpful assistant. Answer the user's question ONLY based on the context provided below.\n\nContext:\n${contextText}\n\nUser Question: ${query}`;
+            
+            promptDisplay.innerText = augmentedPrompt;
+
+            // Step 8: Simulated LLM Generation Output
+            llmOutputDisplay.innerHTML = '<i>Generating grounded answer...</i>';
+            
+            setTimeout(() => {
+                if (topMatches.length === 0) {
+                    llmOutputDisplay.innerText = "I cannot answer your question based on the provided documents as no relevant context was found in the database.";
+                } else {
+                    // Synthetic answer generation grounded in the top matches
+                    const primaryContext = topMatches[0].text;
+                    llmOutputDisplay.innerHTML = `<strong>Answer:</strong> Based on the retrieved context, ${primaryContext.toLowerCase()}`;
+                }
+            }, 600);
+        }
+
+        // Event Listeners
+        document.getElementById('btnIngest').addEventListener('click', processIngestion);
+        document.getElementById('btnQuery').addEventListener('click', processQuery);
+
+        // Auto-run initial ingestion on load
+        window.onload = () => {
+            processIngestion();
+        };
+    </script>
+</body>
+</html>
